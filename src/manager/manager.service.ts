@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 import { CreateManagerDto } from './dto/create-manager.dto';
-import { UpdateManagerDto } from './dto/update-manager.dto';
+import { AssignManagerDto } from './dto/assign-manager.dto';
 
 @Injectable()
 export class ManagerService {
-  create(createManagerDto: CreateManagerDto) {
-    return 'This action adds a new manager';
+  constructor(private prisma: PrismaService) {}
+
+  async create(createManagerDto: CreateManagerDto) {
+    return this.prisma.manager.create({
+      data: createManagerDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all manager`;
-  }
+  async assignManager(assignManagerDto: AssignManagerDto) {
+    const { collaboratorRegistration, managerRegistration } = assignManagerDto;
 
-  findOne(id: number) {
-    return `This action returns a #${id} manager`;
-  }
+    // Busca o colaborador e o gestor
+    const collaborator = await this.prisma.collaborator.findUnique({
+      where: { registration: collaboratorRegistration },
+    });
 
-  update(id: number, updateManagerDto: UpdateManagerDto) {
-    return `This action updates a #${id} manager`;
-  }
+    const manager = await this.prisma.manager.findUnique({
+      where: { registration: managerRegistration },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} manager`;
+    if (!collaborator || !manager) {
+      throw new Error('Colaborador ou gestor não encontrado');
+    }
+
+    // Relaciona o gestor ao colaborador
+    return this.prisma.managerCollaboratorRelation.create({
+      data: {
+        collaboratorId: collaborator.id,
+        managerId: manager.id,
+      },
+    });
   }
 }
