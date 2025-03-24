@@ -67,7 +67,7 @@ model Projeto {
   id             Int                    @id @default(autoincrement())
   area           String
   project        String
-  projectCode    String                 @unique
+  projectCode    String
   subproject     String
   subprojectCode String
   startDate      DateTime
@@ -79,6 +79,8 @@ model Projeto {
   periodos       PeriodoJustificativa[]
   createdAt      DateTime               @default(now())
   updatedAt      DateTime               @updatedAt
+
+  @@unique([area, projectCode, subprojectCode]) // Restrição composta para área, projectCode e subprojectCode
 }
 
 model PeriodoJustificativa {
