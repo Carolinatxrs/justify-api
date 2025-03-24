@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,10 +7,113 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Justification {
-  id             Int      @id @default(autoincrement())
+model Collaborator {
+  id               Int                           @id @default(autoincrement())
+  name             String
+  registration     String                        @unique
+  cpf              String                        @unique
+  email            String                        @unique
+  admissionDate    DateTime
+  dismissalDate    DateTime?
+  status           String                        @default("ativo") // "ativo" ou "desligado"
+  role             String
+  education        String
+  justifications   Justification[]
+  managerRelations ManagerCollaboratorRelation[]
+  apontamentos     Apontamento[]
+  createdAt        DateTime                      @default(now())
+  updatedAt        DateTime                      @updatedAt
+}
+
+model Manager {
+  id                   Int                           @id @default(autoincrement())
+  registration         String                        @unique
+  name                 String
+  role                 String
+  email                String                        @unique
+  managerRelations     ManagerCollaboratorRelation[]
+  projetos             Projeto[]
+  justifications       Justification[]
+  createdAt            DateTime                      @default(now())
+  updatedAt            DateTime                      @updatedAt
+  PeriodoJustificativa PeriodoJustificativa[]
+}
+
+model ManagerCollaboratorRelation {
+  id             Int          @id @default(autoincrement())
   collaboratorId Int
-  justification  String
-  status         String
-  createdAt      DateTime @default(now())
+  collaborator   Collaborator @relation(fields: [collaboratorId], references: [id])
+  managerId      Int
+  manager        Manager      @relation(fields: [managerId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Apontamento {
+  id             Int          @id @default(autoincrement())
+  date           DateTime
+  hoursWorked    Float
+  collaboratorId Int
+  collaborator   Collaborator @relation(fields: [collaboratorId], references: [id])
+  projectId      Int
+  project        Projeto      @relation(fields: [projectId], references: [id])
+  task           String
+  taskCode       String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Projeto {
+  id             Int                    @id @default(autoincrement())
+  area           String
+  project        String
+  projectCode    String                 @unique
+  subproject     String
+  subprojectCode String
+  startDate      DateTime
+  endDate        DateTime
+  managerId      Int
+  manager        Manager                @relation(fields: [managerId], references: [id])
+  apontamentos   Apontamento[]
+  justifications Justification[]
+  periodos       PeriodoJustificativa[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+}
+
+model PeriodoJustificativa {
+  id                     Int             @id @default(autoincrement())
+  projectId              Int
+  project                Projeto         @relation(fields: [projectId], references: [id])
+  managerId              Int
+  manager                Manager         @relation(fields: [managerId], references: [id])
+  periodicity            String // "30 dias", "90 dias", "180 dias"
+  active                 Boolean         @default(true)
+  startJustificationDate DateTime
+  endJustificationDate   DateTime
+  startReportDate        DateTime
+  endReportDate          DateTime
+  startBaseYear          DateTime
+  endBaseYear            DateTime
+  justifications         Justification[]
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+}
+
+model Justification {
+  id                     Int                  @id @default(autoincrement())
+  collaboratorId         Int
+  collaborator           Collaborator         @relation(fields: [collaboratorId], references: [id])
+  projectId              Int
+  project                Projeto              @relation(fields: [projectId], references: [id])
+  managerId              Int
+  manager                Manager              @relation(fields: [managerId], references: [id])
+  justification          String
+  status                 String               @default("pendente") // "pendente", "aprovado", "rejeitado"
+  startJustificationDate DateTime
+  endJustificationDate   DateTime
+  periodoId              Int
+  periodo                PeriodoJustificativa @relation(fields: [periodoId], references: [id])
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
 }

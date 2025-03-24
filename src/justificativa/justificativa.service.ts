@@ -6,14 +6,14 @@ import { PrismaService } from 'src/prisma.service';
 export class JustificativaService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createJustificativaDto: CreateJustificativaDtoType) {
-    const { collaboratorId, justification, status } = createJustificativaDto;
-    return await this.prisma.justification.create({
-      data: {
-        collaboratorId,
-        justification,
-        status,
-      },
-    });
-  }
+  // async create(createJustificativaDto: CreateJustificativaDtoType) {
+  //   const { collaboratorId, justification, status } = createJustificativaDto;
+  //   return await this.prisma.justification.create({
+  //     data: {
+  //       collaboratorId,
+  //       justification,
+  //       status,
+  //     },
+  //   });
+  // }
 }

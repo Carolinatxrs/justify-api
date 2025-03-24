@@ -7,9 +7,9 @@ import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe'; // Pip
 export class JustificativaController {
   constructor(private readonly justificativaService: JustificativaService) {}
 
-  @Post()
-  @UsePipes(new ZodValidationPipe()) // Usando o Pipe para validação
-  async create(@Body() createJustificativaDto: CreateJustificativaDtoType) {
-    return this.justificativaService.create(createJustificativaDto);
-  }
+  // @Post()
+  // @UsePipes(new ZodValidationPipe()) // Usando o Pipe para validação
+  // async create(@Body() createJustificativaDto: CreateJustificativaDtoType) {
+  //   return this.justificativaService.create(createJustificativaDto);
+  // }
 }
