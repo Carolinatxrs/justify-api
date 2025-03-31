@@ -8,7 +8,7 @@ import { ExportService } from './export.service';
 export class ExportController {
   constructor(private readonly exportService: ExportService) {}
 
-  @Get('justifications')
+  @Get('export-justifications')
   async exportJustifications(
     @Query(new ZodValidationPipe(ExportQuerySchema)) query: ExportQueryDto,
     @Res({ passthrough: true }) res: Response,
