@@ -116,6 +116,7 @@ model Justification {
   endJustificationDate   DateTime
   periodoId              Int
   periodo                PeriodoJustificativa @relation(fields: [periodoId], references: [id])
+  baseYear               String               @default("2023")
   createdAt              DateTime             @default(now())
   updatedAt              DateTime             @updatedAt
 }

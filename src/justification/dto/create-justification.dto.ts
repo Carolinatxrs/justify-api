@@ -9,6 +9,7 @@ export const CreateJustificationSchema = z.object({
   status: z.enum(['pendente', 'aprovado', 'rejeitado']).default('pendente'),
   startJustificationDate: z.string().datetime(),
   endJustificationDate: z.string().datetime(),
+  baseYear: z.string(),
 });
 
 export type CreateJustificationDto = z.infer<typeof CreateJustificationSchema>;

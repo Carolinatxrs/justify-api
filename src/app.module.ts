@@ -13,6 +13,6 @@ import { PrismaModule } from './prisma/prisma.module';
 @Module({
   imports: [CollaboratorModule, ManagerModule, ProjectModule, ApontamentoModule, PeriodoModule, JustificationModule, ExportModule, PrismaModule],
   providers: [PrismaService],
-  controllers: [ExportController],
+  // controllers: [ExportController],
 })
 export class AppModule {}

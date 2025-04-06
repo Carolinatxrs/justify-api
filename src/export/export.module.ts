@@ -1,12 +1,11 @@
-// src/export/export.module.ts
+// export.module.ts
 import { Module } from '@nestjs/common';
 import { ExportController } from './export.controller';
 import { ExportService } from './export.service';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
-  imports: [PrismaModule], // Importa o módulo do Prisma
   controllers: [ExportController],
-  providers: [ExportService],
+  providers: [ExportService, PrismaService],
 })
 export class ExportModule {}

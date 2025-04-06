@@ -50,6 +50,7 @@ export class JustificationService {
         status: createJustificationDto.status,
         startJustificationDate: new Date(createJustificationDto.startJustificationDate),
         endJustificationDate: new Date(createJustificationDto.endJustificationDate),
+        baseYear: createJustificationDto.baseYear,
       },
       include: {
         collaborator: true,
