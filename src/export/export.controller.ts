@@ -13,22 +13,20 @@ export class ExportController {
     @Query(new ZodValidationPipe(ExportQuerySchema)) query: ExportQueryDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { stream, hasPendingJustifications } = await this.exportService.generateReport({
+    // 1. Geração do relatório (com opção de mock via query param)
+    const { stream } = await this.exportService.generateReport({
       baseYear: query.baseYear,
-      projects: query.projects,
-      subprojects: query.subprojects,
-      areas: query.areas
+      useMock: query.useMock === 'true' // Converte string para boolean
     });
-    
+
+    // 2. Configuração dos headers
     res.set({
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition': `attachment; filename="RDFinanceiro_RDA_RH_${query.baseYear}.xlsx"`,
+      'Cache-Control': 'no-cache'
     });
 
-    if (hasPendingJustifications) {
-      res.setHeader('X-Justification-Status', 'pending');
-    }
-
+    // 3. Retorno do stream
     return new StreamableFile(stream);
   }
 }
